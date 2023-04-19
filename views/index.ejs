@@ -10,12 +10,16 @@
 <body>
     <h1>GenAI Hackathon Team 21</h1>
     <div class="auth">
-        <a href="login">login</a>
+        <% if (user) { %>
+            <p>Logged in as <strong><%= user.name %></strong> <a href="logout">logout</a></p>
+        <% } else { %>
+            <a href="login">login</a>
+        <% } %>
     </div>
     <div id="chat-log">
         <div class="message--sent">
             <div class='message__text ${role}'>
-                Hi! I'm Hall, your own personal PICOE bot. What would you like to know?
+                Hi<%= user ? ' ' + user.name : '' %>! I'm Hall, your own personal PICOE bot. What would you like to know?
             </div>
         </div>
     </div>

@@ -99,6 +99,9 @@ router
         if (!req.body.username) {
             errors.push('No username specified')
         }
+        if (!req.body.name) {
+            errors.push('No readable name specified')
+        }
         if (errors.length) {
             return res.status(400).json({ error: errors.join(', ') })
         }
@@ -108,6 +111,7 @@ router
             username: req.body.username,
             password: md5(req.body.password)
         }
+        console.log('making user: ', data)
 
         const sql = 'INSERT INTO user (name, username, password) VALUES (?, ?, ?)'
         const params = [data.name, data.username, data.password]

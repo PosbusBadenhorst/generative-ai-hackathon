@@ -1,10 +1,14 @@
-import { Configuration, OpenAIApi } from 'openai';
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import express from 'express'
+import session from 'express-session'
+import md5 from 'md5'
+import morgan from 'morgan'
 import path from 'path'
 import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
-import morgan from 'morgan'
+
+import { Configuration, OpenAIApi } from 'openai';
 
 import * as dotenv from 'dotenv'
 
@@ -32,22 +36,40 @@ const model = 'gpt-3.5-turbo'
 app.use(express.static('./'))
 
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(express.json());
 app.use(cors());
 
+app.set('view engine', 'ejs');
+
+app.use(session(({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: false }
+})))
+app.use(passport.initialize())
+app.use(passport.session())
+
 passport.use(new LocalStrategy(async function (username, password, done) {
+    console.log(username, password)
     db.get(
-        'SELECT username, id FROM users WHERE username = ?',
+        'SELECT * FROM user WHERE username = ?',
         [username],
         function (err, row) {
+            console.log(err, row)
             if (!row) {
+                console.log('user not found')
                 return done(null, false)
             }
             const pwd = md5(password)
-            // WARNING: Do not use this in production
-            if (!pwd !== row.password) {
+            console.log('comparing user password to pwd: ', row.password, pwd)
+            // WARNING: Do not use this in production. Use a package like cryptography to compare passwords.
+            if (pwd !== row.password) {
+                console.log('passwords dont match')
                 return done(null, false)
             }
+            console.log('passwords match, user authenticated', row)
             return done(null, row)
         }
     )
@@ -58,13 +80,17 @@ passport.serializeUser(function (user, done) {
 })
 
 passport.deserializeUser(async function(id, done) {
+    console.log('deserialise', id)
     db.get(
-        `SELECT id, username FROM users WHERE id = ?`,
+        `SELECT * FROM user WHERE id = ?`,
         [id],
         function (err, row) {
+            console.log(err, row)
             if (!row) {
-                return done(null, false)
+                console.log('user not found')
+                return done(null, false, { error: err })
             }
+            console.log('user found')
             return done(null, row)
         }
     )
@@ -77,7 +103,15 @@ app.route('/login')
         failureRedirect: '/login'
     }))
 
-app.route('/').get((req, res) => res.sendFile(path.join(__dirname, './views/index.html')))
+app.route('/logout')
+    .get((req, res) => {
+        return req.logout(() => res.redirect('/'))
+    })
+
+app.route('/').get((req, res) => {
+    console.log(req.user)
+    return res.render('index', { user: req.user })
+})
 
 app.post('/prompt', async (req, res) => {
 
@@ -92,7 +126,7 @@ app.post('/prompt', async (req, res) => {
             },
             {
                 role: 'system',
-                content: 'You seek to improve customer sattisfaction.'
+                content: 'You seek to improve customer satisfaction.'
             },
             ...messages,
         ]
