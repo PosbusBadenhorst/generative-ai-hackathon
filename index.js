@@ -1,9 +1,13 @@
-import { Configuration, OpenAIApi } from "openai";
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
-import path from "path";
+import { Configuration, OpenAIApi } from 'openai';
+import express from 'express'
+import bodyParser from 'body-parser'
+import cors from 'cors'
+import path from 'path'
 import * as dotenv from 'dotenv'
+
+import userRouter from './routes/user.js'
+
+import db from './db.js'
 
 dotenv.config()
 
@@ -27,7 +31,7 @@ app.use(cors());
 
 app.route('/').get((req, res) => res.sendFile(path.join(__dirname, './index.html')))
 
-app.post("/prompt", async (req, res) => {
+app.post('/prompt', async (req, res) => {
 
     const { messages } = req.body
     
@@ -52,6 +56,8 @@ app.post("/prompt", async (req, res) => {
     })
 
 });
+
+app.use('/user', userRouter)
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
