@@ -1,0 +1,88 @@
+* {
+    box-sizing: border-box;
+}
+
+.container .form.hidden {
+    display: none;
+}
+
+.container {
+    width: 60vw;
+    border: 1px solid #ecf0f1;
+    border-radius: 20px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: auto auto;
+    box-shadow: 3px 3px 8px rgba(0,0,0,.3);
+    padding: 25px 50px 50px;
+}
+
+.container .title {
+    grid-row: 1;
+    justify-self: center;
+    padding: 10px 20px;
+    margin: 0 0 10px;
+    border-radius: 20px;
+}
+
+.container .title.selected {
+    background: #d7dffe;
+}
+
+.container .title:hover {
+    background: #edeef1;
+}
+
+.container .title.selected:hover {
+    background: #c9d2f9;
+}
+.container .title:active {
+    background: #d7d9e0;
+}
+
+.container .title button {
+    background: none;
+    font-size: inherit;
+    font-weight: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+.container .form {
+    grid-column: 1 / span 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.text-input {
+    margin: 10px 0 20px;
+    padding: 6px 10px;
+}
+
+button[type=submit] {
+    align-self: stretch;
+    min-width: 100px;
+    background-color: #6c85e1;
+    cursor: pointer;
+    transition: .1s linear;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+button[type=submit]:hover {
+    background-color: #6cbee1;
+}
+
+button[type=submit]:active {
+    background-color: #6c8fe1;
+}
+
+@media only screen and (max-width: 720px) {
+    .container {
+        width: 95vw;
+    }
+}
