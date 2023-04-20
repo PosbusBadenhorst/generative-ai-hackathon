@@ -140,11 +140,11 @@ app.post('/prompt', isUserAuth, async (req, res) => {
             messages: [
                 {
                     role: 'system',
-                    content: 'You are a Financial Advisor Bot called Hall.'
+                    content: 'You are a Financial Advisor Bot called NatWest EASE.'
                 },
                 {
                     role: 'system',
-                    content: 'You seek to improve customer satisfaction.'
+                    content: 'you are a chat bot. Your purpose is to support customers of NatWest group both personal, premier, business and corporates and institutions. You are here to provide financial support and advice and if needed will refer to the information on the NatWest web page for available support and products and rates. These are the web links https://www.natwest.com/. please note that responses cannot be more than 3500 characters long.'
                 },
                 ...messages,
             ]

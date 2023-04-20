@@ -73,7 +73,7 @@ talkButton.onclick = async () => {
                 "voice_id": "Jenny"
             },
             "ssml": "false",
-            "input": "Example test if this is working he"
+            "input": document.getElementsByClassName('message__text assistant')[document.getElementsByClassName('message__text assistant').length -1].textContent
           },
           "config": {
               "fluent": "false",
@@ -83,6 +83,32 @@ talkButton.onclick = async () => {
         })
       });
   }};
+
+  // export const talk = async (message) => {
+  //   // connectionState not supported in firefox
+  //   if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
+  //     const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
+  //       {
+  //         method: 'POST',
+  //         headers: { Authorization: `Basic ${DID_API.key}`, 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({
+  //           "script": {
+  //             "type": "text",
+  //             "provider": {
+  //                 "type": "microsoft",
+  //                 "voice_id": "Jenny"
+  //             },
+  //             "ssml": "false",
+  //             "input": message
+  //           },
+  //           "config": {
+  //               "fluent": "false",
+  //               "pad_audio": "0.0"
+  //           },
+  //           'session_id': sessionId
+  //         })
+  //       });
+  //   }};
 
 const destroyButton = document.getElementById('destroy-button');
 destroyButton.onclick = async () => {
