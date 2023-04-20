@@ -17,8 +17,10 @@ router.route('/me')
 router
     .route('/users')
     .get((req, res) => {
+        console.log('USERS')
         const sql = 'select name, username, id, avatarname, img from user'
         db.get(sql, [], (err, rows) => {
+            console.log(err, rows)
             if (err) {
                 return res.status(400).json({ error: err.message })
             }
@@ -32,6 +34,7 @@ router
 router.route('/preferences')
     .get((req, res) => {
         const user = req.user
+        console.log(req.query)
 
         const data = {
             img: req.query?.img,
