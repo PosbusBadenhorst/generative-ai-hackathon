@@ -12,6 +12,8 @@ import { Configuration, OpenAIApi } from 'openai';
 
 import * as dotenv from 'dotenv'
 
+import isUserAuth from './middlewares/checkAuth.js'
+
 import userRouter from './routes/user.js'
 
 import db from './db.js'
@@ -96,6 +98,11 @@ passport.deserializeUser(async function(id, done) {
     )
 })
 
+app.route('/').get(isUserAuth, (req, res) => {
+    console.log(req.user)
+    return res.render('index', { user: req.user })
+})
+
 app.route('/login')
     .get((req, res) => res.sendFile(path.join(__dirname, './views/login.html')))
     .post(passport.authenticate('local', {
@@ -108,12 +115,7 @@ app.route('/logout')
         return req.logout(() => res.redirect('/'))
     })
 
-app.route('/').get((req, res) => {
-    console.log(req.user)
-    return res.render('index', { user: req.user })
-})
-
-app.post('/prompt', async (req, res) => {
+app.post('/prompt', isUserAuth, async (req, res) => {
 
     const { messages } = req.body
     
