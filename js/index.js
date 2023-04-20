@@ -3,6 +3,11 @@ const message = document.getElementById('message')
 const form = document.querySelector('form')
 const typing = document.querySelector('.typing')
 
+const openMenu = document.querySelector('.avatar__select')
+const menu = document.querySelector('.avatar-menu')
+const menuClose = menu.querySelector('.close')
+const selections = menu.querySelector('.avatar-menu__menu')
+
 const messages = []
 
 const addSpeechBubble = (text, role) => {
@@ -55,3 +60,31 @@ form.onsubmit = e => {
         )
     })
 }
+
+openMenu.onclick = () => {
+    menu.classList.toggle('hidden')
+}
+
+menuClose.onclick = () => {
+    menu.classList.toggle('hidden')
+}
+
+// selections.querySelectorAll('li button').forEach(option => {
+//     option.onclick = (e) => {
+//         const target = e.target.closest('button')
+//         const { name, url } = target.dataset
+//         fetch('http://localhost:3000/user/preferences', {
+//             method: 'PUT',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({
+//                 avatarname: name,
+//                 img: url,
+//             })
+//         })
+//         .then(res => res.json())
+//         .then(res => console.log(res))
+//         .catch(err => console.error(err))
+//     }
+// })

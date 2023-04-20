@@ -40,6 +40,26 @@
         <input type="text" name="message" id="message" placeholder="Type your question here..." autofocus />
         <button type="submit">Send</button>
     </form>
+    <div class="avatar-menu hidden">
+        <div class="avatar-menu__wrapper">
+            <button class="close">Close</button>
+            <h3 class="avatar-menu__title">Select a virtual avatar to talk with</h3>
+            <ul class="avatar-menu__menu">
+                <% avatarUrls.forEach(avatar => { %>
+                    <li>
+                        <a href="/user/preferences?avatarname=<%= avatar.name %>&img=<%= avatar.url %>" data-name="<%= avatar.name %>" data-url="<%= avatar.url %>">
+                            <img src="<%= avatar.url %>" alt="chat-bot avatar" />
+                            <p><%= avatar.name %></p>
+                        </a>
+                        <!-- <button data-name="<%= avatar.name %>" data-url="<%= avatar.url %>">
+                            <img src="<%= avatar.url %>" alt="chat-bot avatar" />
+                            <p><%= avatar.name %></p>
+                        </button> -->
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+    </div>
 </body>
 <script src="/js/index.js"></script>
 </html>

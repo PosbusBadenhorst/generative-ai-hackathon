@@ -20,8 +20,6 @@ import avatarUrls from './avatarUrls.js'
 
 import db from './db.js'
 
-morgan(':method :url :status :res[content-length] - :response-time ms')
-
 dotenv.config()
 
 const __dirname = path.resolve(path.dirname(''));
@@ -36,6 +34,10 @@ const openai = new OpenAIApi(configuration);
 const app = express();
 const port = 3000;
 const model = 'gpt-3.5-turbo'
+
+app.use(
+    morgan(':method :url :status :res[content-length] - :response-time ms')
+)
 
 app.use(express.static('./'))
 
