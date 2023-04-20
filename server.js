@@ -110,6 +110,13 @@ app.route('/login')
         failureRedirect: '/login'
     }))
 
+app.route('/video')
+    .get((req, res) => res.sendFile(path.join(__dirname, './views/video.html')))
+    .post(passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/login'
+    }))
+
 app.route('/logout')
     .get((req, res) => {
         return req.logout(() => res.redirect('/'))
