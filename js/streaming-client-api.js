@@ -3,7 +3,11 @@
 // import DID_API from '../d-id/api.json' assert { type: 'json' };
 // if (DID_API.key == '') alert('Please put your api key inside ./api.json and restart..')
 
-let DID_API = {}
+let DID_API = {
+  "key": 'YmFkLmVuaG9yc3RuakBnbWFpbC5jb20:AD0SobLBz8kbspAbeJ_0Q',
+  "url": "https://api.d-id.com"
+}
+let img = `https://cdn.midjourney.com/7d03081b-0eaf-4497-a94b-494184b574c4/grid_0.png`
 
 fetch('http://localhost:3000/d-id', {
   method: 'GET',
@@ -14,6 +18,7 @@ fetch('http://localhost:3000/d-id', {
 .then(res => res.json())
 .then(res => DID_API = res)
 .catch(err => console.error(err))
+console.log(DID_API)
 
 const RTCPeerConnection = (window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection).bind(window);
 
@@ -31,6 +36,18 @@ const iceGatheringStatusLabel = document.getElementById('ice-gathering-status-la
 const signalingStatusLabel = document.getElementById('signaling-status-label');
 
 const connectButton = document.getElementById('connect-button');
+
+fetch('http://localhost:3000/user/me', {
+  method: 'GET',
+  headers: {
+      'Content-Type': 'application/json'
+  }
+})
+.then(res => res.json())
+.then(res => img = res.img)
+
+console.log(img)
+
 connectButton.onclick = async () => {
   if (peerConnection && peerConnection.connectionState === 'connected') {
     return;
@@ -39,23 +56,12 @@ connectButton.onclick = async () => {
   stopAllStreams();
   closePC();
 
-
-  const userRes = await fetch('http://localhost:3000/user/me', {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json'
-      }
-  })
-
-  const user = userRes.json()
-
-  const img = user.img ? user.img : 'image.png'
-
   const sessionResponse = await fetch(`${DID_API.url}/talks/streams`, {
     method: 'POST',
     headers: {'Authorization': `Basic ${DID_API.key}`, 'Content-Type': 'application/json'},
     body: JSON.stringify({
-      source_url: `https://cdn.midjourney.com/7d03081b-0eaf-4497-a94b-494184b574c4/grid_0.png`
+      // source_url: `https://cdn.midjourney.com/7d03081b-0eaf-4497-a94b-494184b574c4/grid_0.png`,
+      source_url: img,
     }),
   });
 

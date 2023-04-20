@@ -116,6 +116,7 @@ app.route('/').get(isUserAuth, (req, res) => {
 
 app.route('/d-id')
     .get((req, res) => {
+        console.log('DID')
         return res.json({
             "key": process.env.D_ID_KEY,
             "url": "https://api.d-id.com"
