@@ -27,11 +27,20 @@ connectButton.onclick = async () => {
   stopAllStreams();
   closePC();
 
+  const user = await fetch('http://localhost:3000/user/me', {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  })
+
+  const img = user.img ? user.img : 'image.png'
+
   const sessionResponse = await fetch(`${DID_API.url}/talks/streams`, {
     method: 'POST',
     headers: {'Authorization': `Basic ${DID_API.key}`, 'Content-Type': 'application/json'},
     body: JSON.stringify({
-      source_url: "https://create-images-results.d-id.com/auth0%7C643db9430dc0a65785ea02f1/upl_4jibkeDIRiXEpZVAFzur-/image.png"
+      source_url: `https://create-images-results.d-id.com/auth0%7C643db9430dc0a65785ea02f1/upl_4jibkeDIRiXEpZVAFzur-/${img}`
     }),
   });
 

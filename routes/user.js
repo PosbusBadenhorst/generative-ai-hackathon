@@ -9,6 +9,11 @@ import db from '../db.js'
 
 const router = Router()
 
+router.route('/me')
+    .get((req, res) => {
+        return req.user
+    })
+
 router
     .route('/users')
     .get((req, res) => {
