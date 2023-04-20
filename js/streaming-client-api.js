@@ -1,6 +1,23 @@
 'use strict';
 
 import DID_API from '../d-id/api.json' assert { type: 'json' };
+
+try {
+  const userRes = await fetch('http://localhost:3000/user/me', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+  })
+  const user = userRes.json()
+  console.log(user)
+  
+  const img = user.img ? user.img : 'image.png'
+  console.log(img)
+} catch(err) {
+  console.log(err)
+}
+
 if (DID_API.key == '') alert('Please put your api key inside ./api.json and restart..')
 
 const RTCPeerConnection = (window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection).bind(window);
@@ -26,15 +43,6 @@ connectButton.onclick = async () => {
 
   stopAllStreams();
   closePC();
-
-  const user = await fetch('http://localhost:3000/user/me', {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json'
-      }
-  })
-
-  const img = user.img ? user.img : 'image.png'
 
   const sessionResponse = await fetch(`${DID_API.url}/talks/streams`, {
     method: 'POST',
