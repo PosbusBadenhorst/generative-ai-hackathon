@@ -1,7 +1,11 @@
 'use strict';
 
-import DID_API from '../d-id/api.json' assert { type: 'json' };
-if (DID_API.key == '') alert('Please put your api key inside ./api.json and restart..')
+// import DID_API from '../d-id/api.json' assert { type: 'json' };
+// if (DID_API.key == '') alert('Please put your api key inside ./api.json and restart..')
+const DID_API = {
+  "key": "YmFkLmVuaG9yc3RuakBnbWFpbC5jb20:-P1hF0vxRqyk5Nm-oXyOs",
+  "url": "https://api.d-id.com"
+};
 
 const RTCPeerConnection = (window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection).bind(window);
 
@@ -27,20 +31,25 @@ connectButton.onclick = async () => {
   stopAllStreams();
   closePC();
 
-  const user = await fetch('http://localhost:3000/user/me', {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json'
-      }
-  })
 
-  const img = user.img ? user.img : 'image.png'
+  // const userRes = await fetch('http://localhost:3000/user/me', {
+  //     method: 'GET',
+  //     headers: {
+  //         'Content-Type': 'application/json'
+  //     }
+  // })
+
+  // const user = userRes.json()
+
+  // const img = user.img ? user.img : 'image.png'
+
+    
 
   const sessionResponse = await fetch(`${DID_API.url}/talks/streams`, {
     method: 'POST',
     headers: {'Authorization': `Basic ${DID_API.key}`, 'Content-Type': 'application/json'},
     body: JSON.stringify({
-      source_url: `https://create-images-results.d-id.com/auth0%7C643db9430dc0a65785ea02f1/upl_4jibkeDIRiXEpZVAFzur-/${img}`
+      source_url: `https://cdn.midjourney.com/7d03081b-0eaf-4497-a94b-494184b574c4/grid_0.png`
     }),
   });
 
