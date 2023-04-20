@@ -16,6 +16,8 @@ import isUserAuth from './middlewares/checkAuth.js'
 
 import userRouter from './routes/user.js'
 
+import avatarUrls from './avatarUrls.js'
+
 import db from './db.js'
 
 morgan(':method :url :status :res[content-length] - :response-time ms')
@@ -72,7 +74,13 @@ passport.use(new LocalStrategy(async function (username, password, done) {
                 return done(null, false)
             }
             console.log('passwords match, user authenticated', row)
-            return done(null, row)
+            const user = {
+                name: row.name,
+                username: row.username,
+                id: row.id,
+                img: row.img,
+            }
+            return done(null, user)
         }
     )
 }))
@@ -84,7 +92,7 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(async function(id, done) {
     console.log('deserialise', id)
     db.get(
-        `SELECT * FROM user WHERE id = ?`,
+        `SELECT name, username, img, id FROM user WHERE id = ?`,
         [id],
         function (err, row) {
             console.log(err, row)
@@ -100,7 +108,7 @@ passport.deserializeUser(async function(id, done) {
 
 app.route('/').get(isUserAuth, (req, res) => {
     console.log(req.user)
-    return res.render('index', { user: req.user })
+    return res.render('index', { user: req.user, avatarUrls, })
 })
 
 app.route('/login')
@@ -124,27 +132,36 @@ app.route('/logout')
 
 app.post('/prompt', isUserAuth, async (req, res) => {
 
-    const { messages } = req.body
+    try {
+        const { messages } = req.body
+        
+        const completion = await openai.createChatCompletion({
+            model,
+            messages: [
+                {
+                    role: 'system',
+                    content: 'You are a Financial Advisor Bot called Hall.'
+                },
+                {
+                    role: 'system',
+                    content: 'You seek to improve customer satisfaction.'
+                },
+                ...messages,
+            ]
+        })
+        console.log(completion.data.choices[0].message)
     
-    const completion = await openai.createChatCompletion({
-        model,
-        messages: [
-            {
-                role: 'system',
-                content: 'You are a Financial Advisor Bot called Hall.'
+        res.json({
+            completion: completion.data.choices[0].message
+        })
+    } catch (err) {
+        console.error(err)
+        res.status(err.response.status).json({
+            completion: {
+                content: `Unfortunately something went wrong with your request: ${err.message}`,
             },
-            {
-                role: 'system',
-                content: 'You seek to improve customer satisfaction.'
-            },
-            ...messages,
-        ]
-    })
-    console.log(completion.data.choices[0].message)
-
-    res.json({
-        completion: completion.data.choices[0].message
-    })
+        })
+    }
 
 });
 

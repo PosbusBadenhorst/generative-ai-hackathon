@@ -8,14 +8,16 @@
     <title>GenAI Hackathon Team 21</title>
 </head>
 <body>
-    <h1>GenAI Hackathon Team 21</h1>
-    <div class="auth">
-        <% if (user) { %>
-            <p>Logged in as <strong><%= user.name %></strong> <a href="logout">logout</a></p>
-        <% } else { %>
-            <a href="login">login</a>
-        <% } %>
-    </div>
+    <header>
+        <h1>GenAI Hackathon Team 21</h1>
+        <div class="auth">
+            <% if (user) { %>
+                <p>Logged in as <strong><%= user.name %></strong> <a href="logout">logout</a></p>
+            <% } else { %>
+                <a href="login">login</a>
+            <% } %>
+        </div>
+    </header>
     <div id="chat-log">
         <div class="message--sent">
             <div class='message__text ${role}'>
@@ -23,8 +25,13 @@
             </div>
         </div>
     </div>
+    <div class="typing hidden">
+        <div class="typing__dot"></div>
+        <div class="typing__dot"></div>
+        <div class="typing__dot"></div>
+    </div>
     <form action="" class="user-input">
-        <input type="text" name="message" id="message" placeholder="Type your question here..." />
+        <input type="text" name="message" id="message" placeholder="Type your question here..." autofocus />
         <button type="submit">Send</button>
     </form>
 </body>
