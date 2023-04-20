@@ -1,6 +1,7 @@
 const chatLog = document.getElementById('chat-log')
 const message = document.getElementById('message')
 const form = document.querySelector('form')
+const typing = document.querySelector('.typing')
 
 const messages = []
 
@@ -23,6 +24,8 @@ const addSpeechBubble = (text, role) => {
 
 form.onsubmit = e => {
     e.preventDefault()
+
+    typing.classList.remove('hidden')
     
     const messageText = message.value
     message.value = ''
@@ -40,6 +43,15 @@ form.onsubmit = e => {
     })
     .then(res => res.json())
     .then(res => {
+        typing.classList.add('hidden')
         addSpeechBubble(res.completion.content, 'assistant')
+    })
+    .catch(err => {
+        console.error(err)
+        typing.classList.add('hidden')
+        addSpeechBubble(
+            `I\'m sorry, something seems to have gone wrong with the connection. Please see this error message for more details: ${err}`,
+            'assistant'
+        )
     })
 }

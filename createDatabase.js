@@ -2,7 +2,10 @@ import md5 from 'md5'
 
 import db from './db.js'
 
-const defaultImg = ''
+import imgUrls from './avatarUrls.js'
+
+const defaultImg = imgUrls[0]
+console.log(defaultImg)
 
 db.run(
     `CREATE TABLE user (
