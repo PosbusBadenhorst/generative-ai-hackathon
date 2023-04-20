@@ -1,6 +1,8 @@
 import md5 from 'md5'
 
-import db from './db.js' 
+import db from './db.js'
+
+const defaultImg = ''
 
 db.run(
     `CREATE TABLE user (
@@ -8,6 +10,7 @@ db.run(
         name text,
         username text UNIQUE,
         password text,
+        img text,
         CONSTRAINT username_unique UNIQUE (username)
     )`,
     err => {
@@ -16,9 +19,9 @@ db.run(
             console.error(err.message)
         } else {
             console.log('...table created')
-            const insert = `INSERT INTO user (name, username, password) VALUES (?, ?, ?)`
-            db.run(insert, ['admin', 'admin', md5('admin123455')])
-            db.run(insert, ['user', 'testuser', md5('user123455')])
+            const insert = `INSERT INTO user (name, username, password, img) VALUES (?, ?, ?, ?)`
+            db.run(insert, ['admin', 'admin', md5('admin123455'), defaultImg])
+            db.run(insert, ['user', 'testuser', md5('user123455'), defaultImg])
         }
     }
 )
