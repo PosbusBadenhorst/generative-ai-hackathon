@@ -2,10 +2,18 @@
 
 // import DID_API from '../d-id/api.json' assert { type: 'json' };
 // if (DID_API.key == '') alert('Please put your api key inside ./api.json and restart..')
-const DID_API = {
-  "key": "YmFkLmVuaG9yc3RuakBnbWFpbC5jb20:-P1hF0vxRqyk5Nm-oXyOs",
-  "url": "https://api.d-id.com"
-};
+
+let DID_API = {}
+
+fetch('http://localhost:3000/d-id', {
+  method: 'GET',
+  headers: {
+      'Content-Type': 'application/json'
+  }
+})
+.then(res => res.json())
+.then(res => DID_API = res)
+.catch(err => console.error(err))
 
 const RTCPeerConnection = (window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection).bind(window);
 

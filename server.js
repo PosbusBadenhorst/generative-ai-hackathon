@@ -114,6 +114,14 @@ app.route('/').get(isUserAuth, (req, res) => {
     return res.render('index', { user: req.user, avatarUrls, })
 })
 
+app.route('/d-id')
+    .get((req, res) => {
+        return res.json({
+            "key": process.env.D_ID_KEY,
+            "url": "https://api.d-id.com"
+          })
+    })
+
 app.route('/login')
     .get((req, res) => res.sendFile(path.join(__dirname, './views/login.html')))
     .post(passport.authenticate('local', {
