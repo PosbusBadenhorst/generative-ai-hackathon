@@ -1,6 +1,6 @@
 'use strict';
 
-import DID_API from './api.json' assert { type: 'json' };
+import DID_API from '../d-id/api.json' assert { type: 'json' };
 if (DID_API.key == '') alert('Please put your api key inside ./api.json and restart..')
 
 const RTCPeerConnection = (window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection).bind(window);
@@ -31,7 +31,7 @@ connectButton.onclick = async () => {
     method: 'POST',
     headers: {'Authorization': `Basic ${DID_API.key}`, 'Content-Type': 'application/json'},
     body: JSON.stringify({
-      source_url: "https://d-id-public-bucket.s3.amazonaws.com/or-roman.jpg"
+      source_url: "https://create-images-results.d-id.com/auth0%7C643db9430dc0a65785ea02f1/upl_4jibkeDIRiXEpZVAFzur-/image.png"
     }),
   });
 
@@ -66,18 +66,49 @@ talkButton.onclick = async () => {
         method: 'POST',
         headers: { Authorization: `Basic ${DID_API.key}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          'script': {
-            'type': 'audio',
-            'audio_url': 'https://d-id-public-bucket.s3.us-west-2.amazonaws.com/webrtc.mp3',
+          "script": {
+            "type": "text",
+            "provider": {
+                "type": "microsoft",
+                "voice_id": "Jenny"
+            },
+            "ssml": "false",
+            "input": document.getElementsByClassName('message__text assistant')[document.getElementsByClassName('message__text assistant').length -1].textContent
           },
-          'driver_url': 'bank://lively/',
-          'config': {
-            'stitch': true,
+          "config": {
+              "fluent": "false",
+              "pad_audio": "0.0"
           },
           'session_id': sessionId
         })
       });
   }};
+
+  // export const talk = async (message) => {
+  //   // connectionState not supported in firefox
+  //   if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
+  //     const talkResponse = await fetch(`${DID_API.url}/talks/streams/${streamId}`,
+  //       {
+  //         method: 'POST',
+  //         headers: { Authorization: `Basic ${DID_API.key}`, 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({
+  //           "script": {
+  //             "type": "text",
+  //             "provider": {
+  //                 "type": "microsoft",
+  //                 "voice_id": "Jenny"
+  //             },
+  //             "ssml": "false",
+  //             "input": message
+  //           },
+  //           "config": {
+  //               "fluent": "false",
+  //               "pad_audio": "0.0"
+  //           },
+  //           'session_id': sessionId
+  //         })
+  //       });
+  //   }};
 
 const destroyButton = document.getElementById('destroy-button');
 destroyButton.onclick = async () => {
