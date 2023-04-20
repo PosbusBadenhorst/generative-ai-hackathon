@@ -70,7 +70,7 @@ passport.use(new LocalStrategy(async function (username, password, done) {
             console.log('comparing user password to pwd: ', row.password, pwd)
             // WARNING: Do not use this in production. Use a package like cryptography to compare passwords.
             if (pwd !== row.password) {
-                console.log('passwords dont match')
+                console.log('passwords don\'t match')
                 return done(null, false)
             }
             console.log('passwords match, user authenticated', row)
@@ -79,6 +79,7 @@ passport.use(new LocalStrategy(async function (username, password, done) {
                 username: row.username,
                 id: row.id,
                 img: row.img,
+                avatarname: row.avatarname,
             }
             return done(null, user)
         }
@@ -92,7 +93,7 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(async function(id, done) {
     console.log('deserialise', id)
     db.get(
-        `SELECT name, username, img, id FROM user WHERE id = ?`,
+        `SELECT name, username, img, avatarname, id FROM user WHERE id = ?`,
         [id],
         function (err, row) {
             console.log(err, row)
@@ -124,7 +125,6 @@ app.route('/logout')
     })
 
 app.post('/prompt', isUserAuth, async (req, res) => {
-
     try {
         const { messages } = req.body
         

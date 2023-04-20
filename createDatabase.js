@@ -14,6 +14,7 @@ db.run(
         username text UNIQUE,
         password text,
         img text,
+        avatarname text,
         CONSTRAINT username_unique UNIQUE (username)
     )`,
     err => {
@@ -22,9 +23,9 @@ db.run(
             console.error(err.message)
         } else {
             console.log('...table created')
-            const insert = `INSERT INTO user (name, username, password, img) VALUES (?, ?, ?, ?)`
-            db.run(insert, ['admin', 'admin', md5('admin123455'), defaultImg])
-            db.run(insert, ['user', 'testuser', md5('user123455'), defaultImg])
+            const insert = `INSERT INTO user (name, username, password, img, avatarname) VALUES (?, ?, ?, ?, ?)`
+            db.run(insert, ['admin', 'admin', md5('admin123455'), defaultImg.url, defaultImg.name])
+            db.run(insert, ['user', 'testuser', md5('user123455'), defaultImg.url, defaultImg.name])
         }
     }
 )

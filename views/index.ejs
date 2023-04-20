@@ -10,6 +10,12 @@
 <body>
     <header>
         <h1>GenAI Hackathon Team 21</h1>
+        <div class="avatar">
+            <button class="avatar__select">
+                Talking with <%= user.avatarname %>
+                <img src="<%= user.img %>" alt="chat-bot avatar" />
+            </button>
+        </div>
         <div class="auth">
             <% if (user) { %>
                 <p>Logged in as <strong><%= user.name %></strong> <a href="logout">logout</a></p>

@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import md5 from 'md5'
 
+import imgUrls from '../avatarUrls.js'
+
 import db from '../db.js'
 
 const router = Router()
@@ -8,7 +10,7 @@ const router = Router()
 router
     .route('/users')
     .get((req, res) => {
-        const sql = 'select name, username, id from user'
+        const sql = 'select name, username, id, avatarname, img from user'
         db.get(sql, [], (err, rows) => {
             if (err) {
                 return res.status(400).json({ error: err.message })
@@ -46,6 +48,8 @@ router
             name = COALESCE(?, name)
             username = COALESCE(?, username)
             password = COALESCE(?, password)
+            img = COALESCE(?, img)
+            avatarname = COALESCE(?, avatarname)
         WHERE id=?`
 
         const params = [data.name, data.username, data.password, req.params.id]
@@ -79,7 +83,7 @@ router
 router
     .route('/')
     .get((req, res) => {
-        const sql = 'select name, username, id from user'
+        const sql = 'select name, username, id, avatarname, img from user'
         db.get(sql, [], (err, rows) => {
             if (err) {
                 return res.status(400).json({ error: err.message })
@@ -105,16 +109,20 @@ router
         if (errors.length) {
             return res.status(400).json({ error: errors.join(', ') })
         }
+        
+        const defaultImg = imgUrls[0]
 
         const data = {
             name: req.body.name,
             username: req.body.username,
-            password: md5(req.body.password)
+            password: md5(req.body.password),
+            img: defaultImg.url,
+            avatarname: defaultImg.name,
         }
         console.log('making user: ', data)
 
-        const sql = 'INSERT INTO user (name, username, password) VALUES (?, ?, ?)'
-        const params = [data.name, data.username, data.password]
+        const sql = 'INSERT INTO user (name, username, password, img, avatarname) VALUES (?, ?, ?, ?, ?)'
+        const params = [data.name, data.username, data.password, data.img, data.avatarname]
 
         db.run(sql, params, (err, row) => {
             if (err) {
