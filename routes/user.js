@@ -34,7 +34,7 @@ router
 router.route('/preferences')
     .get((req, res) => {
         const user = req.user
-        console.log(req.query)
+        console.log('?!?', req.query, user)
 
         const data = {
             img: req.query?.img,
@@ -42,13 +42,14 @@ router.route('/preferences')
         }
 
         const query = `UPDATE user set
-            img=? and avatarname=?
+            img=?, avatarname=?
         WHERE id=?`
 
         const params = [data.img, data.avatarname, user.id]
         console.log(params)
 
         db.run(query, params, function (err, result) {
+            console.log('res', result)
             if (err) {
                 console.error(err)
                 return res.status(403).json({ error: res.message })
@@ -142,7 +143,7 @@ router
             avatarname = COALESCE(?, avatarname)
         WHERE id=?`
 
-        const params = [data.name, data.username, data.password, req.params.id]
+        const params = [data.name, data.username, data.password, data.img, data.avatarname,  req.params.id]
 
         db.run(query, params, function (err, result) {
             if (err) {

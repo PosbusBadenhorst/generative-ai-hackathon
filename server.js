@@ -58,24 +58,24 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 passport.use(new LocalStrategy(async function (username, password, done) {
-    console.log(username, password)
+    // console.log(username, password)
     db.get(
         'SELECT * FROM user WHERE username = ?',
         [username],
         function (err, row) {
-            console.log(err, row)
+            // console.log(err, row)
             if (!row) {
-                console.log('user not found')
+                // console.log('user not found')
                 return done(null, false)
             }
             const pwd = md5(password)
-            console.log('comparing user password to pwd: ', row.password, pwd)
+            // console.log('comparing user password to pwd: ', row.password, pwd)
             // WARNING: Do not use this in production. Use a package like cryptography to compare passwords.
             if (pwd !== row.password) {
-                console.log('passwords don\'t match')
+                // console.log('passwords don\'t match')
                 return done(null, false)
             }
-            console.log('passwords match, user authenticated', row)
+            // console.log('passwords match, user authenticated', row)
             const user = {
                 name: row.name,
                 username: row.username,
@@ -93,17 +93,17 @@ passport.serializeUser(function (user, done) {
 })
 
 passport.deserializeUser(async function(id, done) {
-    console.log('deserialise', id)
+    // console.log('deserialise', id)
     db.get(
         `SELECT name, username, img, avatarname, id FROM user WHERE id = ?`,
         [id],
         function (err, row) {
-            console.log(err, row)
+            // console.log(err, row)
             if (!row) {
-                console.log('user not found')
+                // console.log('user not found')
                 return done(null, false, { error: err })
             }
-            console.log('user found')
+            // console.log('user found')
             return done(null, row)
         }
     )

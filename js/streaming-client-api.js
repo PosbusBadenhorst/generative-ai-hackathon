@@ -32,18 +32,16 @@ connectButton.onclick = async () => {
   closePC();
 
 
-  // const userRes = await fetch('http://localhost:3000/user/me', {
-  //     method: 'GET',
-  //     headers: {
-  //         'Content-Type': 'application/json'
-  //     }
-  // })
+  const userRes = await fetch('http://localhost:3000/user/me', {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  })
 
-  // const user = userRes.json()
+  const user = userRes.json()
 
-  // const img = user.img ? user.img : 'image.png'
-
-    
+  const img = user.img ? user.img : 'image.png'
 
   const sessionResponse = await fetch(`${DID_API.url}/talks/streams`, {
     method: 'POST',
