@@ -22,6 +22,9 @@ import db from './db.js'
 
 dotenv.config()
 
+const PORT = 3000;
+const MODEL = 'gpt-3.5-turbo'
+
 const __dirname = path.resolve(path.dirname(''));
 
 const configuration = new Configuration({
@@ -32,8 +35,6 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const app = express();
-const port = 3000;
-const model = 'gpt-3.5-turbo'
 
 app.use(
     morgan(':method :url :status :res[content-length] - :response-time ms')
@@ -58,24 +59,18 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 passport.use(new LocalStrategy(async function (username, password, done) {
-    // console.log(username, password)
     db.get(
         'SELECT * FROM user WHERE username = ?',
         [username],
         function (err, row) {
-            // console.log(err, row)
             if (!row) {
-                // console.log('user not found')
                 return done(null, false)
             }
             const pwd = md5(password)
-            // console.log('comparing user password to pwd: ', row.password, pwd)
             // WARNING: Do not use this in production. Use a package like cryptography to compare passwords.
             if (pwd !== row.password) {
-                // console.log('passwords don\'t match')
                 return done(null, false)
             }
-            // console.log('passwords match, user authenticated', row)
             const user = {
                 name: row.name,
                 username: row.username,
@@ -93,24 +88,19 @@ passport.serializeUser(function (user, done) {
 })
 
 passport.deserializeUser(async function(id, done) {
-    // console.log('deserialise', id)
     db.get(
         `SELECT name, username, img, avatarname, id FROM user WHERE id = ?`,
         [id],
         function (err, row) {
-            // console.log(err, row)
             if (!row) {
-                // console.log('user not found')
                 return done(null, false, { error: err })
             }
-            // console.log('user found')
             return done(null, row)
         }
     )
 })
 
 app.route('/').get(isUserAuth, (req, res) => {
-    console.log(req.user)
     return res.render('index', { user: req.user, avatarUrls, })
 })
 
@@ -133,7 +123,7 @@ app.route('/video')
     .get((req, res) => res.sendFile(path.join(__dirname, './views/video.html')))
     .post(passport.authenticate('local', {
         successRedirect: '/',
-        failureRedirect: '/login'
+        failureRedirect: '/login',
     }))
 
 app.route('/logout')
@@ -146,7 +136,7 @@ app.post('/prompt', isUserAuth, async (req, res) => {
         const { messages } = req.body
         
         const completion = await openai.createChatCompletion({
-            model,
+            MODEL,
             messages: [
                 {
                     role: 'system',
@@ -159,13 +149,11 @@ app.post('/prompt', isUserAuth, async (req, res) => {
                 ...messages,
             ]
         })
-        console.log(completion.data.choices[0].message)
     
         res.json({
             completion: completion.data.choices[0].message
         })
     } catch (err) {
-        console.error(err)
         res.status(err.response.status).json({
             completion: {
                 content: `Unfortunately something went wrong with your request: ${err.message}`,
@@ -177,6 +165,6 @@ app.post('/prompt', isUserAuth, async (req, res) => {
 
 app.use('/user', userRouter)
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Server initialised on PORT ${PORT}. Available at http://localhost:${PORT}`);
 });

@@ -5,7 +5,6 @@ import db from './db.js'
 import imgUrls from './avatarUrls.js'
 
 const defaultImg = imgUrls[0]
-console.log(defaultImg)
 
 db.run(
     `CREATE TABLE user (

@@ -17,10 +17,8 @@ router.route('/me')
 router
     .route('/users')
     .get((req, res) => {
-        console.log('USERS')
         const sql = 'select name, username, id, avatarname, img from user'
         db.get(sql, [], (err, rows) => {
-            console.log(err, rows)
             if (err) {
                 return res.status(400).json({ error: err.message })
             }
@@ -32,9 +30,8 @@ router
     })
 
 router.route('/preferences')
-    .get((req, res) => {
+    .get(isUserAuth, (req, res) => {
         const user = req.user
-        console.log('?!?', req.query, user)
 
         const data = {
             img: req.query?.img,
@@ -46,10 +43,8 @@ router.route('/preferences')
         WHERE id=?`
 
         const params = [data.img, data.avatarname, user.id]
-        console.log(params)
 
         db.run(query, params, function (err, result) {
-            console.log('res', result)
             if (err) {
                 console.error(err)
                 return res.status(403).json({ error: res.message })
